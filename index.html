@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abdul Manan - Computer Scientist & YouTuber</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <style>
+    body { margin: 0; font-family: 'Arial', sans-serif; overflow-x: hidden; }
+    .parallax-bg { background: linear-gradient(135deg, #1e3a8a, #7e22ce); min-height: 100vh; }
+    .section { padding: 4rem 2rem; }
+    .social-button { 
+      transition: all 0.3s ease; 
+      position: relative; 
+      overflow: hidden; 
+    }
+    .social-button:hover { 
+      transform: scale(1.1) rotate(2deg); 
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.5); 
+    }
+    .social-button::before {
+      content: ''; 
+      position: absolute; 
+      top: 50%; 
+      left: 50%; 
+      width: 0; 
+      height: 0; 
+      background: rgba(255, 255, 255, 0.3); 
+      border-radius: 50%; 
+      transform: translate(-50%, -50%); 
+      transition: width 0.4s ease, height 0.4s ease;
+    }
+    .social-button:hover::before {
+      width: 200px; 
+      height: 200px; 
+    }
+    .glow { box-shadow: 0 0 20px rgba(255, 255, 255, 0.3); }
+    .particle { position: absolute; border-radius: 50%; pointer-events: none; }
+    .ripple { 
+      position: fixed; 
+      border-radius: 50%; 
+      background: rgba(255, 255, 255, 0.2); 
+      transform: scale(0); 
+      pointer-events: none; 
+      z-index: 1000; 
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+          var firstSheetName = workbook.SheetNames[0];
+          var worksheet = workbook.Sheets[firstSheetName];
+          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+          var filteredData = jsonData.filter(row => row.some(filledCell));
+          var headerRowIndex = filteredData.findIndex((row, index) =>
+            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+          );
+          if (headerRowIndex === -1 || headerRowIndex > 25) {
+            headerRowIndex = 0;
+          }
+          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+          return csv;
+        } catch (e) {
+          console.error(e);
+          return "";
+        }
+      }
+      return gk_fileData[filename] || "";
+    }
+  </script>
+  <script type="text/babel">
+    const { useEffect, useRef } = React;
+
+    const ParticleBackground = () => {
+      const canvasRef = useRef(null);
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const particles = [];
+        for (let i = 0; i < 150; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: Math.random() * 3 + 1,
+            vx: Math.random() * 2 - 1,
+            vy: Math.random() * 2 - 1,
+            color: `hsl(${Math.random() * 360}, 70%, 50%)`,
+          });
+        }
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+        });
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+            if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            const dx = p.x - mouseX;
+            const dy = p.y - mouseY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < 100) {
+              p.vx += dx * 0.01;
+              p.vy += dy * 0.01;
+            }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.fill();
+          });
+          requestAnimationFrame(animate);
+        };
+        animate();
+        window.addEventListener('resize', () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        });
+      }, []);
+      return <canvas ref={canvasRef} className="absolute inset-0 z-0" />;
+    };
+
+    const RippleEffect = () => {
+      useEffect(() => {
+        const createRipple = (e) => {
+          const ripple = document.createElement('div');
+          ripple.className = 'ripple';
+          document.body.appendChild(ripple);
+          const size = 100;
+          const x = e.clientX - size / 2;
+          const y = e.clientY - size / 2;
+          gsap.set(ripple, { width: size, height: size, left: x, top: y });
+          gsap.to(ripple, {
+            scale: 2,
+            opacity: 0,
+            duration: 0.6,
+            ease: 'power2.out',
+            onComplete: () => ripple.remove(),
+          });
+        };
+        window.addEventListener('click', createRipple);
+        return () => window.removeEventListener('click', createRipple);
+      }, []);
+      return null;
+    };
+
+    const App = () => {
+      const aboutRef = useRef(null);
+      const youtubeRef = useRef(null);
+      const gearRef = useRef(null);
+
+      useEffect(() => {
+        gsap.registerPlugin(ScrollTrigger);
+        gsap.from(aboutRef.current, {
+          opacity: 0,
+          y: 100,
+          rotationX: 10,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: aboutRef.current, start: 'top 80%' },
+        });
+        gsap.from(youtubeRef.current, {
+          opacity: 0,
+          x: -100,
+          scale: 0.9,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: youtubeRef.current, start: 'top 80%' },
+        });
+        gsap.from(gearRef.current, {
+          opacity: 0,
+          x: 100,
+          scale: 0.9,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: gearRef.current, start: 'top 80%' },
+        });
+      }, []);
+
+      return (
+        <div className="parallax-bg text-white relative">
+          <ParticleBackground />
+          <RippleEffect />
+          <header className="text-center py-16">
+            <h1 className="text-5xl md:text-7xl font-bold animate-pulse">
+              Abdul Manan
+            </h1>
+            <p className="text-xl md:text-2xl mt-4 opacity-80">
+              Computer Scientist & YouTuber
+            </p>
+            <div className="mt-6 flex justify-center gap-4 flex-wrap">
+              <a href="https://www.youtube.com/@MananFM" className="social-button bg-red-600 px-4 py-2 rounded-full glow">YouTube</a>
+              <a href="https://github.com/abdulmananch" className="social-button bg-gray-800 px-4 py-2 rounded-full glow">GitHub</a>
+              <a href="https://www.instagram.com/mr.alladen/" className="social-button bg-pink-600 px-4 py-2 rounded-full glow">Instagram</a>
+              <a href="https://www.tiktok.com/@mananfm" className="social-button bg-black px-4 py-2 rounded-full glow">TikTok</a>
+            </div>
+          </header>
+
+          <section ref={aboutRef} className="section bg-black bg-opacity-50 rounded-lg mx-4 md:mx-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">About Me</h2>
+            <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+              I'm a passionate computer scientist fluent in 5 languages: English, Arabic, Urdu, Punjabi, and Spanish. My coding arsenal includes HTML, CSS, JavaScript, C++, and Swift. I thrive on creativity, bringing my imagination to life through video editing, photo editing, and coding projects.
+            </p>
+          </section>
+
+          <section ref={youtubeRef} className="section bg-black bg-opacity-50 rounded-lg mx-4 md:mx-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">YouTube Journey</h2>
+            <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+              Since 2014, I've been creating YouTube videos to capture memories and share my passion. Inspired by creators like PewDiePie and Smosh, I challenge myself to make engaging content. With 2k subscribers, I'm working on consistency to grow my channel.
+            </p>
+            <div className="mt-6 flex justify-center">
+              <div className="social-button relative overflow-hidden rounded-lg">
+                <iframe
+                  width="560"
+                  height="315"
+                  src="https://www.youtube.com/embed/F12y1K8oEJY?si=htTLBh5W66Ww4DBK&t=10"
+                  title="YouTube video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="glow"
+                ></iframe>
+              </div>
+            </div>
+          </section>
+
+          <section ref={gearRef} className="section bg-black bg-opacity-50 rounded-lg mx-4 md:mx-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">My Gear</h2>
+            <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+              Stay tuned! I'm working on sharing the details of my camera and accessories setup soon.
+            </p>
+          </section>
+
+          <footer className="text-center py-8">
+            <p className="text-lg opacity-80">© 2025 Abdul Manan. Built with 💻 & ❤️</p>
+          </footer>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
