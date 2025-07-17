@@ -10,8 +10,9 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    body { margin: 0; font-family: 'Arial', sans-serif; overflow-x: hidden; }
+    body { margin: 0; font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
     .parallax-bg { background: linear-gradient(135deg, #1e3a8a, #7e22ce); min-height: 100vh; }
     .section { padding: 4rem 2rem; }
     .social-button { 
@@ -48,6 +49,38 @@
       transform: scale(0); 
       pointer-events: none; 
       z-index: 1000; 
+    }
+    .fancy-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 3rem;
+      color: #fff;
+      text-shadow: none;
+      animation: gentleMove 4s infinite ease-in-out;
+    }
+    @keyframes gentleMove {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .animated-text {
+      font-size: 1rem;
+      color: #e2e8f0;
+      opacity: 0;
+      animation: fadeInSoft 2s ease-out forwards;
+    }
+    @keyframes fadeInSoft {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2rem;
+      color: #fff;
+      text-align: center;
+      animation: none;
+    }
+    p {
+      color: #e2e8f0;
+      animation: none;
     }
   </style>
 </head>
@@ -172,7 +205,7 @@
 
       useEffect(() => {
         gsap.registerPlugin(ScrollTrigger);
-        gsap.from(aboutRef.current, {
+        gsap.from(aboutRef.current.querySelector('h2'), {
           opacity: 0,
           y: 100,
           rotationX: 10,
@@ -180,7 +213,7 @@
           ease: 'power3.out',
           scrollTrigger: { trigger: aboutRef.current, start: 'top 80%' },
         });
-        gsap.from(youtubeRef.current, {
+        gsap.from(youtubeRef.current.querySelector('h2'), {
           opacity: 0,
           x: -100,
           scale: 0.9,
@@ -188,7 +221,7 @@
           ease: 'power3.out',
           scrollTrigger: { trigger: youtubeRef.current, start: 'top 80%' },
         });
-        gsap.from(gearRef.current, {
+        gsap.from(gearRef.current.querySelector('h2'), {
           opacity: 0,
           x: 100,
           scale: 0.9,
@@ -203,10 +236,10 @@
           <ParticleBackground />
           <RippleEffect />
           <header className="text-center py-16">
-            <h1 className="text-5xl md:text-7xl font-bold animate-pulse">
+            <h1 className="fancy-title">
               Abdul Manan
             </h1>
-            <p className="text-xl md:text-2xl mt-4 opacity-80">
+            <p className="animated-text mt-4">
               Computer Scientist & YouTuber
             </p>
             <div className="mt-6 flex justify-center gap-4 flex-wrap">
@@ -218,15 +251,15 @@
           </header>
 
           <section ref={aboutRef} className="section bg-black bg-opacity-50 rounded-lg mx-4 md:mx-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">About Me</h2>
-            <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+            <h2 className="fancy-title mb-6">About Me</h2>
+            <p className="animated-text">
               I'm a passionate computer scientist fluent in 5 languages: English, Arabic, Urdu, Punjabi, and Spanish. My coding arsenal includes HTML, CSS, JavaScript, C++, and Swift. I thrive on creativity, bringing my imagination to life through video editing, photo editing, and coding projects.
             </p>
           </section>
 
           <section ref={youtubeRef} className="section bg-black bg-opacity-50 rounded-lg mx-4 md:mx-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">YouTube Journey</h2>
-            <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+            <h2 className="fancy-title mb-6">YouTube Journey</h2>
+            <p className="animated-text">
               Since 2014, I've been creating YouTube videos to capture memories and share my passion. Inspired by creators like PewDiePie and Smosh, I challenge myself to make engaging content. With 2k subscribers, I'm working on consistency to grow my channel.
             </p>
             <div className="mt-6 flex justify-center">
@@ -246,14 +279,14 @@
           </section>
 
           <section ref={gearRef} className="section bg-black bg-opacity-50 rounded-lg mx-4 md:mx-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-center">My Gear</h2>
-            <p className="text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+            <h2 className="fancy-title mb-6">My Gear</h2>
+            <p className="animated-text">
               Stay tuned! I'm working on sharing the details of my camera and accessories setup soon.
             </p>
           </section>
 
           <footer className="text-center py-8">
-            <p className="text-lg opacity-80">© 2025 Abdul Manan. Built with 💻 & ❤️</p>
+            <p className="animated-text">© 2025 Abdul Manan. Built with 💻 & ❤️</p>
           </footer>
         </div>
       );
