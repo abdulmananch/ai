@@ -8,12 +8,19 @@
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body { margin: 0; font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
-    .parallax-bg { background: linear-gradient(135deg, #1e3a8a, #7e22ce); min-height: 100vh; position: relative; overflow: hidden; animation: gradientShift 10s ease infinite; }
+    .parallax-bg { 
+      background: linear-gradient(135deg, #1e3a8a, #7e22ce); 
+      min-height: 100vh; 
+      position: relative; 
+      overflow: hidden; 
+      animation: gradientShift 10s ease infinite; 
+    }
     @keyframes gradientShift {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
@@ -48,8 +55,8 @@
       animation: fadeInSoft 2s ease-out forwards;
     }
     @keyframes fadeInSoft {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
     h2 {
       font-family: 'Montserrat', sans-serif;
@@ -62,52 +69,75 @@
       color: #e2e8f0;
       animation: none;
     }
-    /* Custom button styles */
+    .neon {
+      box-shadow: 0 0 8px #fff, 0 0 16px #7e22ce, 0 0 32px #7e22ce;
+      animation: neonPulse 2s infinite alternate;
+    }
+    @keyframes neonPulse {
+      from { box-shadow: 0 0 8px #fff, 0 0 16px #7e22ce, 0 0 32px #7e22ce; }
+      to { box-shadow: 0 0 16px #fff, 0 0 32px #a855f7, 0 0 48px #a855f7; }
+    }
     .custom-button {
-      background-color: #ff0000; /* Default color, overridden by specific classes */
-      color: #ffcccc; /* Default text color */
-      border: 2px solid #ffcccc;
-      border-bottom-width: 4px;
-      font-medium: ;
-      overflow: hidden;
       position: relative;
       padding: 8px 16px;
       border-radius: 8px;
+      font-medium;
+      color: #fff;
+      border: 2px solid;
       cursor: pointer;
-      transition: all 0.3s ease;
+      overflow: hidden;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      z-index: 10; /* Ensure buttons are above other elements */
+    }
+    .custom-button::before {
+      content: '';
+      position: absolute;
+      top: -150%;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.5);
+      transition: top 0.5s ease;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     }
     .custom-button:hover {
-      transform: scale(1.1) rotate(2deg) translateY(-5px); /* Jump and hover up effect */
-      filter: brightness(1.5);
-      border-top-width: 4px;
-      border-bottom-width: 2px;
+      transform: scale(1.1) rotate(2deg) translateY(-5px);
+      filter: brightness(1.2);
+    }
+    .custom-button:hover::before {
+      top: 150%;
     }
     .custom-button:active {
       opacity: 0.75;
     }
-    .custom-button span {
-      background-color: #ffcccc;
-      box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.3);
-      position: absolute;
-      top: -150%;
-      left: 0;
-      width: 100px;
-      height: 5px;
-      border-radius: 5px;
-      opacity: 0.5;
-      transition: top 0.5s ease;
+    .youtube-btn { 
+      background-color: #ff0000; 
+      border-color: #ffcccc; 
     }
-    .custom-button:hover span {
-      top: 150%;
+    .youtube-btn::before { 
+      background: #ffcccc; 
     }
-    .youtube-btn { background-color: #ff0000; border-color: #ffcccc; }
-    .youtube-btn span { background-color: #ffcccc; }
-    .github-btn { background-color: #24292e; border-color: #d1d5da; }
-    .github-btn span { background-color: #d1d5da; }
-    .instagram-btn { background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d); border-color: #fff; }
-    .instagram-btn span { background: linear-gradient(45deg, #fff, #fff); }
-    .tiktok-btn { background-color: #000000; border-color: #ffffff; }
-    .tiktok-btn span { background-color: #ffffff; }
+    .github-btn { 
+      background-color: #24292e; 
+      border-color: #d1d5da; 
+    }
+    .github-btn::before { 
+      background: #d1d5da; 
+    }
+    .instagram-btn { 
+      background: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d); 
+      border-color: #fff; 
+    }
+    .instagram-btn::before { 
+      background: #fff; 
+    }
+    .tiktok-btn { 
+      background-color: #000000; 
+      border-color: #ffffff; 
+    }
+    .tiktok-btn::before { 
+      background: #ffffff; 
+    }
     .video-container {
       position: relative;
       overflow: hidden;
@@ -117,6 +147,51 @@
     .video-container:hover iframe {
       transform: scale(1.05);
       transition: transform 0.3s ease;
+    }
+    .scroll-indicator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      z-index: 1000;
+    }
+    .scroll-progress {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #7e22ce, #a855f7);
+      transition: width 0.3s ease;
+    }
+    .matrix-rain {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .parallax-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      z-index: -1;
+    }
+    .stars { background-image: url('https://images.unsplash.com/photo-1447433819943-74a20987a81b'); }
+    .clouds { background-image: url('https://images.unsplash.com/photo-1499951360447-b19be8fe80f5'); }
+    .wave-container {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      overflow: hidden;
+      z-index: 1; /* Below buttons but above background */
     }
   </style>
 </head>
@@ -155,7 +230,53 @@
     }
   </script>
   <script type="text/babel">
-    const { useEffect, useRef } = React;
+    const { useEffect, useRef, useState } = React;
+
+    const Typewriter = ({ text, speed = 40 }) => { // Changed speed to 40ms
+      const [displayed, setDisplayed] = React.useState('');
+      React.useEffect(() => {
+        let i = 0;
+        const timer = setInterval(() => {
+          setDisplayed(text.slice(0, i++));
+          if (i > text.length) clearInterval(timer);
+        }, speed);
+        return () => clearInterval(timer);
+      }, [text, speed]);
+      return <span>{displayed}<span className="animate-pulse">|</span></span>;
+    };
+
+    const MatrixRain = () => {
+      const canvasRef = useRef(null);
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const chars = '010101MANAN';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(0);
+        const animate = () => {
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#7e22ce';
+          ctx.font = `${fontSize}px monospace`;
+          drops.forEach((y, i) => {
+            const text = chars.charAt(Math.floor(Math.random() * chars.length));
+            ctx.fillText(text, i * fontSize, y * fontSize);
+            if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+            drops[i]++;
+          });
+          requestAnimationFrame(animate);
+        };
+        animate();
+        window.addEventListener('resize', () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        });
+      }, []);
+      return <canvas ref={canvasRef} className="matrix-rain" />;
+    };
 
     const ParticleBackground = () => {
       const canvasRef = useRef(null);
@@ -180,6 +301,17 @@
           mouseX = e.clientX;
           mouseY = e.clientY;
         });
+        window.addEventListener('click', (e) => {
+          particles.forEach(p => {
+            const dx = p.x - e.clientX;
+            const dy = p.y - e.clientY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < 100) {
+              p.vx += dx * 0.1;
+              p.vy += dy * 0.1;
+            }
+          });
+        });
         const animate = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           particles.forEach(p => {
@@ -191,9 +323,23 @@
             const dy = p.y - mouseY;
             const distance = Math.sqrt(dx * dx + dy * dy);
             if (distance < 100) {
-              p.vx += dx * 0.01;
-              p.vy += dy * 0.01;
+              p.vx -= dx * 0.01;
+              p.vy -= dy * 0.01;
             }
+            particles.forEach(p2 => {
+              if (p !== p2) {
+                const dx2 = p.x - p2.x;
+                const dy2 = p.y - p2.y;
+                const dist = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+                if (dist < 50) {
+                  ctx.beginPath();
+                  ctx.moveTo(p.x, p.y);
+                  ctx.lineTo(p2.x, p2.y);
+                  ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                  ctx.stroke();
+                }
+              }
+            });
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.fillStyle = p.color;
@@ -210,23 +356,79 @@
       return <canvas ref={canvasRef} className="absolute inset-0 z-0" />;
     };
 
+    const ScrollIndicator = () => {
+      useEffect(() => {
+        const updateProgress = () => {
+          const scrollTop = window.scrollY;
+          const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          const progress = (scrollTop / docHeight) * 100;
+          document.querySelector('.scroll-progress').style.width = `${progress}%`;
+        };
+        window.addEventListener('scroll', updateProgress);
+        return () => window.removeEventListener('scroll', updateProgress);
+      }, []);
+      return (
+        <div className="scroll-indicator">
+          <div className="scroll-progress"></div>
+        </div>
+      );
+    };
+
+    const ThreeDAvatar = () => {
+      const containerRef = useRef(null);
+      useEffect(() => {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(200, 200);
+        containerRef.current.appendChild(renderer.domElement);
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.MeshBasicMaterial({ color: 0x7e22ce, wireframe: true });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        camera.position.z = 2;
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+          mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+          mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+        const animate = () => {
+          requestAnimationFrame(animate);
+          cube.rotation.x = mouseY * Math.PI;
+          cube.rotation.y = mouseX * Math.PI;
+          renderer.render(scene, camera);
+        };
+        animate();
+        window.addEventListener('resize', () => {
+          renderer.setSize(200, 200);
+          camera.aspect = 1;
+          camera.updateProjectionMatrix();
+        });
+      }, []);
+      return <div ref={containerRef} className="absolute top-4 right-4 z-10" />;
+    };
+
     const RippleEffect = () => {
       useEffect(() => {
         const createRipple = (e) => {
-          const ripple = document.createElement('div');
-          ripple.className = 'ripple';
-          document.body.appendChild(ripple);
-          const size = Math.random() * 150 + 50;
-          const x = e.clientX - size / 2;
-          const y = e.clientY - size / 2;
-          gsap.set(ripple, { width: size, height: size, left: x, top: y, background: `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1})` });
-          gsap.to(ripple, {
-            scale: 2,
-            opacity: 0,
-            duration: 1,
-            ease: 'power2.out',
-            onComplete: () => ripple.remove(),
-          });
+          // Check if the click target is an <a> tag to avoid blocking navigation
+          const target = e.target;
+          if (target.tagName !== 'A' && !target.closest('a')) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+            document.body.appendChild(ripple);
+            const size = Math.random() * 150 + 50;
+            const x = e.clientX - size / 2;
+            const y = e.clientY - size / 2;
+            gsap.set(ripple, { width: size, height: size, left: x, top: y, background: `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1})` });
+            gsap.to(ripple, {
+              scale: 2,
+              opacity: 0,
+              duration: 1,
+              ease: 'power2.out',
+              onComplete: () => ripple.remove(),
+            });
+          }
         };
         window.addEventListener('click', createRipple);
         return () => window.removeEventListener('click', createRipple);
@@ -241,72 +443,90 @@
 
       useEffect(() => {
         gsap.registerPlugin(ScrollTrigger);
-        gsap.from(aboutRef.current.querySelector('h2'), {
-          opacity: 0,
-          y: 100,
-          rotationX: 10,
-          duration: 1.2,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: aboutRef.current, start: 'top 80%' },
-        });
-        gsap.from(youtubeRef.current.querySelector('h2'), {
-          opacity: 0,
-          x: -100,
-          scale: 0.9,
-          duration: 1.2,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: youtubeRef.current, start: 'top 80%' },
-        });
-        gsap.from(gearRef.current.querySelector('h2'), {
-          opacity: 0,
-          x: 100,
-          scale: 0.9,
-          duration: 1.2,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: gearRef.current, start: 'top 80%' },
+        const sections = [aboutRef.current, youtubeRef.current, gearRef.current];
+        sections.forEach((section) => {
+          gsap.from(section.querySelector('h2'), {
+            opacity: 0,
+            y: 100,
+            rotationX: 10,
+            duration: 1.2,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: section, start: 'top 80%' },
+          });
+          gsap.from(section.querySelectorAll('p, .video-container'), {
+            opacity: 0,
+            y: 50,
+            duration: 1,
+            ease: 'power3.out',
+            stagger: 0.2,
+            scrollTrigger: { trigger: section, start: 'top 80%' },
+          });
         });
       }, []);
 
       return (
         <div className="parallax-bg text-white relative">
+          <div className="parallax-layer stars" style={{ transform: 'translateY(0)' }}></div>
+          <div className="parallax-layer clouds" style={{ transform: 'translateY(0)' }}></div>
+          <ScrollIndicator />
+          <MatrixRain />
           <ParticleBackground />
+          <ThreeDAvatar />
           <RippleEffect />
-          <header className="text-center py-16">
-            <h1 className="text-5xl md:text-7xl font-bold animate-pulse">
-              MANAN
+          <header className="text-center py-16 relative">
+            <h1 className="text-5xl md:text-7xl font-bold neon">
+              <Typewriter text="MANAN" speed={40} /> {/* Updated speed to 40ms */}
             </h1>
             <p className="animated-text mt-4">
               Computer Scientist & YouTuber
             </p>
-            <div className="mt-6 flex justify-center gap-4 flex-wrap">
-              <button class="youtube-btn custom-button">
-                <span class="bg-red-400 shadow-red-400 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
-                YouTube
-              </button>
-              <button class="github-btn custom-button">
-                <span class="bg-gray-300 shadow-gray-300 absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
-                GitHub
-              </button>
-              <button class="instagram-btn custom-button">
-                <span class="bg-white shadow-white absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
-                Instagram
-              </button>
-              <button class="tiktok-btn custom-button">
-                <span class="bg-white shadow-white absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]"></span>
-                TikTok
-              </button>
+            <div className="mt-6 flex justify-center gap-4 flex-wrap relative z-20">
+              <a href="https://www.youtube.com/@MananFM" target="_blank" rel="noopener noreferrer" className="z-20 inline-block">
+                <button className="youtube-btn custom-button neon group z-20">
+                  YouTube
+                </button>
+              </a>
+              <a href="https://github.com/abdulmananch" target="_blank" rel="noopener noreferrer" className="z-20 inline-block">
+                <button className="github-btn custom-button neon group z-20">
+                  GitHub
+                </button>
+              </a>
+              <a href="https://www.instagram.com/mr.alladen/" target="_blank" rel="noopener noreferrer" className="z-20 inline-block">
+                <button className="instagram-btn custom-button neon group z-20">
+                  Instagram
+                </button>
+              </a>
+              <a href="https://www.tiktok.com/@mananfm" target="_blank" rel="noopener noreferrer" className="z-20 inline-block">
+                <button className="tiktok-btn custom-button neon group z-20">
+                  TikTok
+                </button>
+              </a>
+            </div>
+            <div className="wave-container">
+              <svg viewBox="0 0 1440 320" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '100%' }}>
+                <path fill="#7e22ce" fill-opacity="0.7">
+                  <animate attributeName="d" dur="10s" repeatCount="indefinite"
+                    values="
+                      M0,160 Q360,240 720,160 T1440,160 V320 H0 Z;
+                      M0,120 Q360,320 720,160 T1440,200 V320 H0 Z;
+                      M0,160 Q360,160 720,240 T1440,160 V320 H0 Z;
+                      M0,160 Q360,240 720,160 T1440,160 V320 H0 Z
+                    "
+                  />
+                </path>
+              </svg>
             </div>
           </header>
 
           <section ref={aboutRef} className="section bg-black bg-opacity-50 rounded-lg mx-4 md:mx-16">
-            <h2 className="fancy-title mb-6">About Me</h2>
+            <h2 className="fancy-title mb-6 neon">About Me</h2>
             <p className="animated-text">
               I'm a passionate computer scientist fluent in 5 languages: English, Arabic, Urdu, Punjabi, and Spanish. My coding arsenal includes HTML, CSS, JavaScript, C++, and Swift. I thrive on creativity, bringing my imagination to life through video editing, photo editing, and coding projects.
             </p>
           </section>
 
           <section ref={youtubeRef} className="section bg-black bg-opacity-50 rounded-lg mx-4 md:mx-16">
-            <h2 className="fancy-title mb-6">YouTube Journey</h2>
+            <h2 className="fancy-title mb-6 neon">YouTube Journey</h2>
             <p className="animated-text">
               Since 2014, I've been creating YouTube videos to capture memories and share my passion. Inspired by creators like PewDiePie and Smosh, I challenge myself to make engaging content. With 2k subscribers, I'm working on consistency to grow my channel.
             </p>
@@ -327,7 +547,7 @@
           </section>
 
           <section ref={gearRef} className="section bg-black bg-opacity-50 rounded-lg mx-4 md:mx-16">
-            <h2 className="fancy-title mb-6">My Gear</h2>
+            <h2 className="fancy-title mb-6 neon">My Gear</h2>
             <p className="animated-text">
               Stay tuned! I'm working on sharing the details of my camera and accessories setup soon.
             </p>
