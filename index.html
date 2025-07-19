@@ -87,7 +87,7 @@
       cursor: pointer;
       overflow: hidden;
       transition: transform 0.3s ease, filter 0.3s ease;
-      z-index: 10; /* Ensure buttons are above other elements */
+      z-index: 10;
     }
     .custom-button::before {
       content: '';
@@ -193,46 +193,152 @@
       overflow: hidden;
       z-index: 1; /* Below buttons but above background */
     }
+    /* Orbiting Planets Animation */
+    .orbit-container {
+      position: absolute;
+      left: 50%;
+      top: 12rem;
+      width: 300px;
+      height: 300px;
+      margin-left: -150px;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .planet {
+      position: absolute;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      top: 50%;
+      left: 50%;
+      margin: -12px 0 0 -12px;
+      background: linear-gradient(135deg, #fff, #7e22ce 80%);
+      box-shadow: 0 0 18px #7e22ce88, 0 0 8px #fff;
+      animation: orbit 8s linear infinite;
+    }
+    .planet.two { background: linear-gradient(135deg, #ff0000, #fff 80%); animation-duration: 12s; width: 18px; height: 18px;}
+    .planet.three { background: linear-gradient(135deg, #1e3a8a, #fff 70%); animation-duration: 15s; width: 30px; height: 30px;}
+    .planet.four { background: linear-gradient(135deg, #fd1d1d, #e1306c 60%); animation-duration: 18s; width: 14px; height: 14px;}
+    @keyframes orbit {
+      0% { transform: rotate(0deg) translateX(120px) rotate(0deg);}
+      100% { transform: rotate(360deg) translateX(120px) rotate(-360deg);}
+    }
+    .planet.two { animation-name: orbit2; }
+    @keyframes orbit2 {
+      0% { transform: rotate(0deg) translateX(80px) rotate(0deg);}
+      100% { transform: rotate(360deg) translateX(80px) rotate(-360deg);}
+    }
+    .planet.three { animation-name: orbit3; }
+    @keyframes orbit3 {
+      0% { transform: rotate(0deg) translateX(150px) rotate(0deg);}
+      100% { transform: rotate(360deg) translateX(150px) rotate(-360deg);}
+    }
+    .planet.four { animation-name: orbit4; }
+    @keyframes orbit4 {
+      0% { transform: rotate(0deg) translateX(45px) rotate(0deg);}
+      100% { transform: rotate(360deg) translateX(45px) rotate(-360deg);}
+    }
+    /* END Orbiting Planets */
+    /* Animated Footer Icons Row */
+    .footer-anim-row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 36px;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+      min-height: 72px;
+    }
+    .rocket-svg {
+      width: 60px;
+      height: 60px;
+      animation: rocketFloat 2.5s ease-in-out infinite;
+    }
+    @keyframes rocketFloat {
+      0% { transform: translateY(0);}
+      50% { transform: translateY(-18px);}
+      100% { transform: translateY(0);}
+    }
+    .rocket-flame {
+      animation: flameFlicker 0.25s infinite alternate;
+      transform-origin: 50% 100%;
+    }
+    @keyframes flameFlicker {
+      from { opacity: 0.9; transform: scaleY(1);}
+      to { opacity: 0.5; transform: scaleY(1.2);}
+    }
+    .shooting-star-svg {
+      width: 62px;
+      height: 32px;
+      position: relative;
+      overflow: visible;
+      animation: starShoot 4s linear infinite;
+    }
+    @keyframes starShoot {
+      0% { opacity: 0; transform: translateX(-80px) translateY(0) scale(0.7);}
+      15% { opacity: 1;}
+      60% { opacity: 1; transform: translateX(80px) translateY(10px) scale(1);}
+      100% { opacity: 0; transform: translateX(140px) translateY(18px) scale(0.7);}
+    }
+    .cat-svg {
+      width: 46px;
+      height: 46px;
+      animation: catWave 2.7s infinite;
+    }
+    @keyframes catWave {
+      0%,100% { transform: rotate(0);}
+      15% { transform: rotate(-10deg);}
+      25% { transform: rotate(8deg);}
+      40% { transform: rotate(-7deg);}
+      50% { transform: rotate(7deg);}
+      70% { transform: rotate(0);}
+    }
+    .astro-svg {
+      width: 44px;
+      height: 44px;
+      animation: astroFloat 2.2s infinite;
+    }
+    @keyframes astroFloat {
+      0%,100% { transform: translateY(0);}
+      60% { transform: translateY(-10px);}
+    }
+    .gamepad-svg {
+      width: 48px;
+      height: 32px;
+      animation: gamePadJump 2.3s infinite;
+    }
+    @keyframes gamePadJump {
+      0%,100% { transform: translateY(0);}
+      50% { transform: translateY(-7px);}
+    }
+    .monitor-svg {
+      width: 52px;
+      height: 38px;
+      animation: monitorBlink 2.6s infinite;
+    }
+    @keyframes monitorBlink {
+      0%,100% { filter: drop-shadow(0 0 0px #a855f7);}
+      38% { filter: drop-shadow(0 0 10px #38bdf8);}
+    }
+    .db-svg {
+      width: 40px;
+      height: 40px;
+      animation: dbPulse 2.8s infinite;
+    }
+    @keyframes dbPulse {
+      0%,100% { transform: scale(1);}
+      50% { transform: scale(1.13);}
+    }
   </style>
 </head>
 <body>
   <div id="root"></div>
-  <script type="text/javascript">
-    var gk_isXlsx = false;
-    var gk_xlsxFileLookup = {};
-    var gk_fileData = {};
-    function filledCell(cell) {
-      return cell !== '' && cell != null;
-    }
-    function loadFileData(filename) {
-      if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-        try {
-          var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-          var firstSheetName = workbook.SheetNames[0];
-          var worksheet = workbook.Sheets[firstSheetName];
-          var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-          var filteredData = jsonData.filter(row => row.some(filledCell));
-          var headerRowIndex = filteredData.findIndex((row, index) =>
-            row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-          );
-          if (headerRowIndex === -1 || headerRowIndex > 25) {
-            headerRowIndex = 0;
-          }
-          var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
-          csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-          return csv;
-        } catch (e) {
-          console.error(e);
-          return "";
-        }
-      }
-      return gk_fileData[filename] || "";
-    }
-  </script>
   <script type="text/babel">
     const { useEffect, useRef, useState } = React;
 
-    const Typewriter = ({ text, speed = 40 }) => { // Changed speed to 40ms
+    const Typewriter = ({ text, speed = 40 }) => {
       const [displayed, setDisplayed] = React.useState('');
       React.useEffect(() => {
         let i = 0;
@@ -411,7 +517,6 @@
     const RippleEffect = () => {
       useEffect(() => {
         const createRipple = (e) => {
-          // Check if the click target is an <a> tag to avoid blocking navigation
           const target = e.target;
           if (target.tagName !== 'A' && !target.closest('a')) {
             const ripple = document.createElement('div');
@@ -435,6 +540,93 @@
       }, []);
       return null;
     };
+
+    // Orbiting Planets React Component
+    const OrbitingPlanets = () => (
+      <div className="orbit-container" aria-hidden="true">
+        <div className="planet"></div>
+        <div className="planet two"></div>
+        <div className="planet three"></div>
+        <div className="planet four"></div>
+      </div>
+    );
+
+    // Footer Animated Row (computer/tech themed)
+    const FooterAnimRow = () => (
+      <div className="footer-anim-row">
+        {/* Rocket */}
+        <svg className="rocket-svg" viewBox="0 0 64 64" fill="none">
+          <g>
+            <ellipse cx="32" cy="61" rx="7" ry="3" fill="#c7d2fe" opacity="0.5"/>
+            <rect x="28" y="35" width="8" height="16" rx="4" fill="#d4d4d8"/>
+            <rect x="30" y="15" width="4" height="26" rx="2" fill="#a855f7"/>
+            <polygon points="32,4 40,20 24,20" fill="#fff" stroke="#a855f7" strokeWidth="2"/>
+            <circle cx="32" cy="26" r="6" fill="#f3f4f6" stroke="#6d28d9" strokeWidth="2"/>
+            <polygon className="rocket-flame" points="32,51 29,59 35,59" fill="#fdba74" opacity="0.85"/>
+            <polygon className="rocket-flame" points="32,51 30,58 34,58" fill="#fbbf24" opacity="0.5"/>
+          </g>
+        </svg>
+        {/* Shooting Star */}
+        <svg className="shooting-star-svg" viewBox="0 0 62 32" fill="none">
+          <g>
+            <ellipse cx="56" cy="15" rx="6" ry="2.1" fill="#fff6" />
+            <rect x="46" y="14" width="12" height="2" rx="1" fill="#fbbf24" />
+            <ellipse cx="46" cy="15" rx="2.5" ry="2.5" fill="#fff" />
+            <rect x="6" y="15" width="39" height="1" rx="0.5" fill="#fff3" />
+          </g>
+        </svg>
+        {/* Cat Octocat */}
+        <svg className="cat-svg" viewBox="0 0 46 46" fill="none">
+          <g>
+            <ellipse cx="23" cy="35" rx="14" ry="8" fill="#d1d5db" />
+            <ellipse cx="23" cy="24" rx="14" ry="14" fill="#222" />
+            <ellipse cx="16" cy="20" rx="2" ry="2.5" fill="#fff"/>
+            <ellipse cx="30" cy="20" rx="2" ry="2.5" fill="#fff"/>
+            <polygon points="11,11 18,18 15,5" fill="#222" />
+            <polygon points="35,11 28,18 31,5" fill="#222" />
+            <rect x="19" y="30" width="8" height="2" rx="1" fill="#fff"/>
+          </g>
+        </svg>
+        {/* Astronaut */}
+        <svg className="astro-svg" viewBox="0 0 44 44" fill="none">
+          <g>
+            <circle cx="22" cy="22" r="20" fill="#fff" opacity="0.15"/>
+            <ellipse cx="22" cy="28" rx="11" ry="5" fill="#a855f7" opacity="0.3"/>
+            <circle cx="22" cy="18" r="10" fill="#dbeafe" stroke="#a855f7" strokeWidth="2"/>
+            <ellipse cx="22" cy="16" rx="7" ry="5" fill="#a855f7" opacity="0.3"/>
+            <rect x="18" y="30" width="8" height="7" rx="4" fill="#a855f7"/>
+          </g>
+        </svg>
+        {/* Game Controller */}
+        <svg className="gamepad-svg" viewBox="0 0 48 32" fill="none">
+          <g>
+            <rect x="4" y="10" width="40" height="18" rx="8" fill="#1e293b" stroke="#fff" strokeWidth="2"/>
+            <circle cx="14" cy="19" r="3" fill="#fff"/>
+            <circle cx="34" cy="19" r="3" fill="#fbbf24"/>
+            <rect x="22" y="19" width="4" height="10" rx="2" fill="#fbbf24"/>
+            <rect x="12" y="14" width="2" height="2" rx="1" fill="#a855f7"/>
+            <rect x="34" y="14" width="2" height="2" rx="1" fill="#a855f7"/>
+          </g>
+        </svg>
+        {/* Computer Monitor */}
+        <svg className="monitor-svg" viewBox="0 0 52 38" fill="none">
+          <g>
+            <rect x="4" y="6" width="44" height="24" rx="3" fill="#0ea5e9" stroke="#fff" strokeWidth="2"/>
+            <rect x="14" y="32" width="24" height="4" rx="2" fill="#64748b"/>
+            <rect x="20" y="28" width="12" height="4" rx="2" fill="#a855f7"/>
+          </g>
+        </svg>
+        {/* Database/Server */}
+        <svg className="db-svg" viewBox="0 0 40 40" fill="none">
+          <g>
+            <ellipse cx="20" cy="8" rx="16" ry="6" fill="#a855f7"/>
+            <rect x="4" y="8" width="32" height="24" rx="10" fill="#dbeafe"/>
+            <ellipse cx="20" cy="32" rx="16" ry="6" fill="#a855f7"/>
+            <ellipse cx="20" cy="20" rx="16" ry="7" fill="#c4b5fd"/>
+          </g>
+        </svg>
+      </div>
+    );
 
     const App = () => {
       const aboutRef = useRef(null);
@@ -473,9 +665,10 @@
           <ParticleBackground />
           <ThreeDAvatar />
           <RippleEffect />
+          <OrbitingPlanets />
           <header className="text-center py-16 relative">
             <h1 className="text-5xl md:text-7xl font-bold neon">
-              <Typewriter text="MANAN" speed={40} /> {/* Updated speed to 40ms */}
+              <Typewriter text="MANAN" speed={40} />
             </h1>
             <p className="animated-text mt-4">
               Computer Scientist & YouTuber
@@ -504,7 +697,7 @@
             </div>
             <div className="wave-container">
               <svg viewBox="0 0 1440 320" style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '100%' }}>
-                <path fill="#7e22ce" fill-opacity="0.7">
+                <path fill="#7e22ce" fillOpacity="0.7">
                   <animate attributeName="d" dur="10s" repeatCount="indefinite"
                     values="
                       M0,160 Q360,240 720,160 T1440,160 V320 H0 Z;
@@ -554,7 +747,8 @@
           </section>
 
           <footer className="text-center py-8">
-            <p className="animated-text">© 2025 MANAN. Built with 💻 & ❤️</p>
+            <FooterAnimRow />
+            <p className="animated-text mt-4">© 2025 MANAN. Built with 💻 & ❤️</p>
           </footer>
         </div>
       );
